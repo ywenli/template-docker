@@ -1,11 +1,11 @@
 version: '3'
-services:           
+services:
   mysql:           #コンテナの名前(なんでもok)
     image: mysql:8.0.13
-    command: --default-authentication-plugin=mysql_native_password 
+    command: --default-authentication-plugin=mysql_native_password
                    #MySQL -v8.0から認証方式が変更されたので、mysql -v5.0に合わせるプラグイン
-    volumes:  
-      - "./mysql-data:/var/lib/mysql"  
+    volumes:
+      - "./mysql-data:/var/lib/mysql"
                    #ローカルのmysql-dateにデータを保存する（コンテナが消えてもデータが残る）
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -16,9 +16,15 @@ services:
     build: .         #Dockefileを指定
     volumes:         #dockerコンテナ内のファイルをローカルで編集する為の記述
       - ".:/app"
+      - gem_data:/usr/local/bundle
+                     #gemの永続化
     ports:           #localhost:3000にアクセスすると、コンテナ内の3000ポートにアクセスする
       - "3000:3000"
     tty: true
-    depends_on: 
+    depends_on:
       - mysql        #mysqlコンテナにアクセスする
     working_dir: "/app" #コンテナに入った時に直接appディレクトリに入る
+
+volumes:
+  mysql-data:
+  gem_data:
